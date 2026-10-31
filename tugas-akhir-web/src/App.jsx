@@ -1,122 +1,47 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import Header from './components/Header'
+import RingkasanPresensi from './components/RingkasanPresensi'
+import FormPresensi from './components/FormPresensi'
+import DaftarPresensi from './components/DaftarPresensi'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [presensi, setPresensi] = useState([])
+  const [pesan, setPesan] = useState('')
+
+  function tambahPresensi(data) {
+    const sudahAda = presensi.some(
+      (item) => item.nim === data.nim && item.tanggal === data.tanggal,
+    )
+
+    if (sudahAda) {
+      setPesan('NIM ini sudah memiliki presensi pada tanggal tersebut.')
+      return false
+    }
+
+    setPresensi([...presensi, { ...data, id: crypto.randomUUID() }])
+    setPesan('Presensi berhasil ditambahkan.')
+    return true
+  }
+
+  function hapusPresensi(id) {
+    setPresensi(presensi.filter((item) => item.id !== id))
+    setPesan('Catatan presensi berhasil dihapus.')
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <main className="mx-auto max-w-5xl space-y-8 px-4 py-8 sm:px-6 sm:py-12">
+      <Header />
+      <RingkasanPresensi presensi={presensi} />
+      <div className="grid items-start gap-6 md:grid-cols-[320px_1fr]">
+        <FormPresensi onTambah={tambahPresensi} pesan={pesan} />
+        <DaftarPresensi presensi={presensi} onHapus={hapusPresensi} />
+      </div>
+      <p className="text-center text-xs text-zinc-500">
+        Data tersimpan sementara selama halaman terbuka. Memuat ulang halaman akan mengosongkan data.
+      </p>
+    </main>
   )
 }
 
 export default App
+

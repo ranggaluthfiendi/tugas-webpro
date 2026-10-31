@@ -1,16 +1,56 @@
-# React + Vite
+# Presensi Mahasiswa
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplikasi latihan React dasar untuk mencatat kehadiran mahasiswa. Menggunakan Vite, Tailwind CSS, dan komponen shadcn/ui dalam JavaScript (JSX).
 
-Currently, two official plugins are available:
+## Menjalankan
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+Buka http://localhost:5173
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Cara menggunakan
 
-## Expanding the ESLint configuration
+1. Isi nama, NIM (angka), tanggal, dan status kehadiran.
+2. Klik **Tambah presensi**. Catatan muncul di daftar dan ringkasan ikut berubah.
+3. Cari catatan dengan nama atau NIM.
+4. Klik **Hapus** untuk menghapus catatan.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+NIM yang sama hanya dapat dicatat sekali pada tanggal yang sama. Tanggal berbeda diperbolehkan. Data hanya disimpan di state selama halaman terbuka, sehingga hilang ketika halaman dimuat ulang. Tahap ini belum menggunakan backend atau database.
+
+## Struktur yang perlu dipelajari
+
+```text
+src/
+  App.jsx                      # State daftar, fungsi tambah dan hapus
+  components/
+    Header.jsx                 # Judul aplikasi
+    RingkasanPresensi.jsx       # Menghitung total setiap status
+    KartuRingkasan.jsx          # Widget angka yang bisa dipakai ulang
+    FormPresensi.jsx            # Controlled input dan submit
+    DaftarPresensi.jsx          # Pencarian, map, dan kondisi data kosong
+    KartuPresensi.jsx           # Menampilkan satu catatan dari props
+    ui/                        # Komponen dasar shadcn/ui
+  lib/utils.js                 # Penggabungan class komponen shadcn
+  index.css                    # Tailwind dan warna aplikasi
+```
+
+Alur data: `FormPresensi` memanggil prop `onTambah`, lalu `App` memperbarui state `presensi`. State tersebut dikirim melalui props ke ringkasan dan daftar. Daftar memakai `.map()` untuk menampilkan kartu dengan `key={item.id}`. Tombol hapus mengirim ID kembali ke `App`, kemudian `.filter()` membuang catatan tersebut.
+
+Satu catatan berisi `id`, `nama`, `nim`, `tanggal`, dan `status`. Ringkasan menghitung catatan presensi, bukan jumlah mahasiswa unik.
+
+## Komponen dan dokumentasi
+
+UI memakai Button, Input, Card, Badge, Label, dan NativeSelect dari shadcn/ui. NativeSelect tetap memakai value dan onChange seperti select biasa. Tidak memakai router, form library, atau state manager tambahan.
+
+- React state: https://react.dev/learn/state-a-components-memory
+- React props: https://react.dev/learn/passing-props-to-a-component
+- React list: https://react.dev/learn/rendering-lists
+- Tailwind + Vite: https://tailwindcss.com/docs/installation/using-vite
+- shadcn + Vite: https://ui.shadcn.com/docs/installation/vite
+- Button: https://ui.shadcn.com/docs/components/button
+- Input: https://ui.shadcn.com/docs/components/input
+- Card: https://ui.shadcn.com/docs/components/card
+- Badge: https://ui.shadcn.com/docs/components/badge
